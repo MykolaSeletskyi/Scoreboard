@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Panel</title>
+    <style>
+        html,
+        body {
+            height: 100%;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            font-family: system-ui, sans-serif;
+            align-items: center;
+            height: 100%;
+        }
+
+        .team {
+            margin: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .team .name {
+            font-size: 25px;
+        }
+
+        .team .score {
+            font-size: 37px;
+            font-weight: 600;
+        }
+
+        .name {
+            width: 100px;
+        }
+
+        .name,
+        .name:focus {
+            outline: none !important;
+            text-align: center;
+            border: none;
+        }
+
+        .btns {
+            display: flex;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .btn {
+            width: 50px;
+            height: 50px;
+            font-size: 35px;
+            border: none;
+            color: #ffffff;
+        }
+
+        .btn:hover {
+            filter: brightness(2);
+        }
+
+        .subtractBtn {
+            background: #2f2cf3;
+        }
+
+        .addBtn {
+            background: #d30000;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="team">
+            <input class="name" id="name_1" value="Name 1" type="text"
+                onkeyup="this.style.width = ((this.value.length+1) * 15) + 'px';">
+            <span class="score" id="score_1">0</span>
+            <div class="btns">
+                <button class="btn subtractBtn" id="subtractBtn_1">-</button>
+                <button class="btn addBtn" id="addBtn_1">+</button>
+            </div>
+        </div>
+        <div class="team">
+            <input class="name" id="name_2" value="Name 2" type="text"
+                onkeyup="this.style.width = ((this.value.length+1) * 15) + 'px';">
+            <span class="score" id="score_2">0</span>
+            <div class="btns">
+                <button class="btn subtractBtn" id="subtractBtn_2">-</button>
+                <button class="btn addBtn" id="addBtn_2" name="addBtn_2">+</button>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+    const channel = new BroadcastChannel('Scoreboard_Update');
+
+    function UpdateFieldScoreboard(fieldId, newValue) {
+        channel.postMessage({
+            fieldId: fieldId,
+            newValue: newValue
+        });
+    }
+    document.querySelectorAll('.name').forEach(item => {
+        item.addEventListener('input', e => {
+            UpdateFieldScoreboard(e.target.id, e.target.value);
+        })
+    })
+    document.querySelectorAll('.btn').forEach(function (item) {
+        item.onclick = ((e) => {
+            console.log(e)
+            let id = e.target.id;
+            let scoreId;
+            if (e.currentTarget.className.includes("subtractBtn")) {
+                scoreId = "score_" + id.replace("subtractBtn_", "");
+                let score = document.getElementById(scoreId);
+                newValue = parseInt(score.innerText) - 1;
+                score.innerText = newValue;
+            } else {
+                scoreId = "score_" + id.replace("addBtn_", "");
+                let score = document.getElementById(scoreId);
+                newValue = parseInt(score.innerText) + 1;
+                score.innerText = newValue;
+            }
+            UpdateFieldScoreboard(scoreId, newValue);
+        })
+    })
+</script>
+
+</html>

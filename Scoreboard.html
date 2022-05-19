@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scoreboard</title>
+    <style>
+        html {
+            height: 100%;
+            background: #000;
+            color: #fff;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-evenly;
+            font-family: system-ui, sans-serif;
+        }
+
+        .container .team {
+            margin: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container .team .name {
+            font-size: 100px;
+        }
+
+        .container .team .score {
+            font-size: 300px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="team">
+            <h1 class="name" id="name_1">Name 1</h1>
+            <span class="score" id="score_1">0</span>
+        </div>
+        <div class="team">
+            <h1 class="name" id="name_2">Name 2</h1>
+            <span class="score" id="score_2">0</span>
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+    const channel = new BroadcastChannel('Scoreboard_Update');
+    channel.addEventListener('message', (event) => {
+        document.getElementById(event.data.fieldId).innerHTML = event.data.newValue
+    });
+</script>
+
+</html>
